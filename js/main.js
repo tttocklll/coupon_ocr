@@ -47,6 +47,7 @@
       let text = res.text;
       // replace frequently missed errors
       text = text.replace(/ /g, "");
+      text = text.replace(/~/g, "-");
       document.getElementById("textRes").value = text;
     });
   };
@@ -125,13 +126,6 @@
             cv.BORDER_CONSTANT,
             new cv.Scalar()
           );
-
-          // if (!last.empty() && !last2.empty()) {
-          //   let img = last.convertTo(cv.cv_32F);
-          //   // hist = cv.calcHist(last);
-          //   // hist2 = cv.calcHist(last2);
-          //   // console.log(hist.compareHist(hist2, cv.HISTCMP_CORREL));
-          // }
 
           break;
         }
