@@ -3,7 +3,17 @@
   const resolution = { w: 1080, h: 720 };
   const canvasSize = { w: 360, h: 240 };
   const video = document.getElementById("videoInput");
+  const canvasFrame = document.getElementById("canvasOutput"); // canvasFrame is the id of <canvas>
+  const context = canvasFrame.getContext("2d");
+  const button = document.getElementById("button");
+  let body = document.body;
   let isPushed = false;
+  let src = new cv.Mat(canvasSize.h, canvasSize.w, cv.CV_8UC4);
+  let dst = new cv.Mat(canvasSize.h, canvasSize.w, cv.CV_8UC1);
+  const FPS = 30;
+  let last = new cv.Mat();
+  let last2 = new cv.Mat();
+  let count = 0;
 
   media = navigator.mediaDevices
     .getUserMedia({
@@ -20,35 +30,8 @@
       console.log(err);
     });
 
-  const canvasFrame = document.getElementById("canvasOutput"); // canvasFrame is the id of <canvas>
-  const context = canvasFrame.getContext("2d");
-
-  const button = document.getElementById("button");
   button.onclick = () => {
     isPushed = true;
-  };
-
-  let src = new cv.Mat(canvasSize.h, canvasSize.w, cv.CV_8UC4);
-  let dst = new cv.Mat(canvasSize.h, canvasSize.w, cv.CV_8UC1);
-  const FPS = 30;
-  let last = new cv.Mat();
-  let last2 = new cv.Mat();
-  let count = 0;
-
-  const init = () => {
-    isPushed = false;
-    count = 0;
-    document.getElementById("button").hidden = false;
-    document.getElementById("buttonReturn").hidden = true;
-    document.getElementById("canvasOutput").hidden = false;
-    document.getElementById("canvasRes").hidden = true;
-    document.getElementById("textRes").hidden = true;
-    setTimeout(processVideo, 0);
-  };
-  document.getElementById("buttonReturn").onclick = () => {
-    last = new cv.Mat();
-    last2 = new cv.Mat();
-    init();
   };
 
   // ocr
@@ -74,18 +57,19 @@
     if (!last.empty()) {
       last.copyTo(last2);
     }
+
     let begin = Date.now();
+    let contours = new cv.MatVector();
+    let poly = new cv.MatVector();
+    let hierarchy = new cv.Mat();
+    let res = [];
+
     context.drawImage(video, 0, 0, canvasSize.w, canvasSize.h);
     src.data.set(context.getImageData(0, 0, canvasSize.w, canvasSize.h).data);
 
     // edge detection
     cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
     cv.threshold(dst, dst, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU);
-    let contours = new cv.MatVector();
-    let poly = new cv.MatVector();
-    let hierarchy = new cv.Mat();
-
-    let res = [];
 
     cv.findContours(
       dst,
@@ -95,7 +79,6 @@
       cv.CHAIN_APPROX_TC89_L1
     );
 
-    let maxLevel = 0;
     for (let i = 0; i < contours.size(); i++) {
       let area = cv.contourArea(contours.get(i));
       if (area > 15000) {
@@ -207,6 +190,26 @@
       doOCR();
     }
   };
+
+  const init = () => {
+    last = new cv.Mat();
+    last2 = new cv.Mat();
+    isPushed = false;
+    count = 0;
+    document.getElementById("button").hidden = false;
+    document.getElementById("buttonReturn").hidden = true;
+    document.getElementById("canvasOutput").hidden = false;
+    document.getElementById("canvasRes").hidden = true;
+    document.getElementById("textRes").hidden = true;
+    setTimeout(processVideo, 0);
+  };
+  document.getElementById("buttonReturn").onclick = init();
+
+  body.addEventListener("keypress", (e) => {
+    if (e.code === "Enter") {
+      isPushed ? init() : (isPushed = true);
+    }
+  });
   // schedule first one.
   setTimeout(processVideo, 0);
 })();
