@@ -25,7 +25,7 @@
 
   const button = document.getElementById("button");
   button.onclick = () => {
-    isPushed = !isPushed;
+    isPushed = true;
   };
 
   let src = new cv.Mat(canvasSize.h, canvasSize.w, cv.CV_8UC4);
@@ -34,6 +34,22 @@
   let last = new cv.Mat();
   let last2 = new cv.Mat();
   let count = 0;
+
+  const init = () => {
+    isPushed = false;
+    count = 0;
+    document.getElementById("button").hidden = false;
+    document.getElementById("buttonReturn").hidden = true;
+    document.getElementById("canvasOutput").hidden = false;
+    document.getElementById("canvasRes").hidden = true;
+    document.getElementById("textRes").hidden = true;
+    setTimeout(processVideo, 0);
+  };
+  document.getElementById("buttonReturn").onclick = () => {
+    last = new cv.Mat();
+    last2 = new cv.Mat();
+    init();
+  };
 
   // ocr
   const doOCR = async () => {
@@ -183,9 +199,11 @@
       cv.cvtColor(mat, mat, cv.COLOR_RGBA2GRAY);
       cv.threshold(mat, mat, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU);
       cv.imshow("canvasRes", mat);
-      document.getElementById("divOutput").hidden = true;
-      document.getElementById("divRes").hidden = false;
-      document.getElementById("divText").hidden = false;
+      document.getElementById("canvasOutput").hidden = true;
+      document.getElementById("canvasRes").hidden = false;
+      document.getElementById("textRes").hidden = false;
+      document.getElementById("button").hidden = true;
+      document.getElementById("buttonReturn").hidden = false;
       doOCR();
     }
   };

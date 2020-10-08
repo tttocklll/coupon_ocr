@@ -10,19 +10,17 @@
     <link rel="stylesheet" href="stylesheet.css" />
   </head>
   <body>
-    <button id="button">push</button>
-    <div hidden>
-      <video autoplay id="videoInput"></video>
-    </div>
-    <div id="divOutput">
-      <canvas id="canvasOutput"></canvas>
-    </div>
-    <div id="divRes" hidden>
-      <canvas id="canvasRes"></canvas>
-    </div>
-    <div id="divText" hidden>
-      <textarea id="textRes"></textarea>
-    </div>
+    <button id="button" class="button">capture</button>
+    <button id="buttonReturn" class="button" hidden>restart</button>
+
+    <video autoplay id="videoInput" hidden></video>
+
+    <canvas id="canvasOutput"></canvas>
+
+    <canvas id="canvasRes" hidden></canvas>
+
+    <textarea id="textRes" hidden></textarea>
+
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="js/modernizr.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
