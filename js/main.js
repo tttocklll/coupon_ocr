@@ -33,6 +33,7 @@
   const FPS = 30;
   let last = new cv.Mat();
   let last2 = new cv.Mat();
+  let count = 0;
 
   // ocr
   const doOCR = async () => {
@@ -144,6 +145,31 @@
         0
       );
     }
+    if (!last.empty() && !last2.empty()) {
+      try {
+        const srcVec = new cv.MatVector();
+        const srcVec2 = new cv.MatVector();
+        let tmp = new cv.Mat();
+        let tmp2 = new cv.Mat();
+        let hist = new cv.Mat();
+        let hist2 = new cv.Mat();
+        let mask = new cv.Mat();
+        let mask2 = new cv.Mat();
+        cv.cvtColor(last, tmp, cv.COLOR_RGBA2GRAY, 0);
+        cv.cvtColor(last2, tmp2, cv.COLOR_RGBA2GRAY, 0);
+        srcVec.push_back(tmp);
+        srcVec2.push_back(tmp2);
+
+        cv.calcHist(srcVec, [0], mask, hist, [256], [0, 255], false);
+        cv.calcHist(srcVec2, [0], mask2, hist2, [256], [0, 255], false);
+        if (cv.compareHist(hist, hist2, cv.HISTCMP_CORREL) > 0.9) {
+          count++;
+          if (count > 50) isPushed = true;
+        } else count = 0;
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
 
     cv.imshow("canvasOutput", src); // canvasOutput is the id of another <canvas>;
     // schedule next one.
@@ -165,5 +191,4 @@
   };
   // schedule first one.
   setTimeout(processVideo, 0);
-  // cv.imshow("canvasOutput", last);
 })();
