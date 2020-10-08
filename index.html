@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Coupon reader</title>
+    <meta name="Description" content="Just read Soracom's coupon code by OCR" />
+    <link rel="stylesheet" href="stylesheet.css" />
+  </head>
+  <body>
+    <button id="button">push</button>
+    <div hidden>
+      <video autoplay id="videoInput"></video>
+    </div>
+    <div id="divOutput">
+      <canvas id="canvasOutput"></canvas>
+    </div>
+    <div id="divRes" hidden>
+      <canvas id="canvasRes"></canvas>
+    </div>
+    <div id="divText" hidden>
+      <textarea id="textRes"></textarea>
+    </div>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="js/modernizr.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.Jcrop.js"></script>
+    <script src="js/opencv.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js"
+      type="module"
+    ></script>
+    <script src="js/glfx.min.js"></script>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>
