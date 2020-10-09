@@ -3,7 +3,6 @@
   const resolution = { w: 1080, h: 720 };
   const canvasSize = { w: 360, h: 240 };
   const video = document.getElementById("videoInput");
-  video.style.height = "0px";
   const canvasFrame = document.getElementById("canvasOutput"); // canvasFrame is the id of <canvas>
   const context = canvasFrame.getContext("2d");
   const button = document.getElementById("button");
@@ -22,10 +21,14 @@
       video: {
         height: canvasSize.h,
         width: canvasSize.w,
+        facingMode: {
+          exact: 'environment'
+        }
       },
     })
     .then((stream) => {
       video.srcObject = stream;
+      video.play();
     })
     .catch((err) => {
       console.log(err);
